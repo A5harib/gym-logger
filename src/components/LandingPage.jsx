@@ -2,22 +2,41 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { ArrowRight, Database, Layout, Palette, Router as RouterIcon } from "lucide-react";
+import { SignInButton, SignUpButton, useUser, SignOutButton } from "@clerk/clerk-react";
+import { ArrowRight, Dumbbell, Flame, Salad, ListTodo } from "lucide-react";
 
 export default function LandingPage() {
+  const { isSignedIn } = useUser();
+
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground">
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600">
-            GymLogger Stack
+          <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 flex items-center gap-2">
+            <Dumbbell className="w-6 h-6 text-primary" />
+            GymLogger
           </div>
-          <div className="flex gap-4">
-            <Link to="/features">
-               <Button variant="ghost">Features</Button>
-            </Link>
-            <Button>Get Started</Button>
+          <div className="flex gap-4 items-center">
+            {isSignedIn ? (
+                <>
+                    <Link to="/dashboard">
+                        <Button>Go to Dashboard</Button>
+                    </Link>
+                    <SignOutButton>
+                        <Button variant="ghost">Sign Out</Button>
+                    </SignOutButton>
+                </>
+            ) : (
+                <>
+                    <SignInButton mode="modal">
+                        <Button variant="ghost">Log In</Button>
+                    </SignInButton>
+                    <SignUpButton mode="modal">
+                        <Button>Get Started</Button>
+                    </SignUpButton>
+                </>
+            )}
           </div>
         </div>
       </nav>
@@ -29,18 +48,25 @@ export default function LandingPage() {
         
         <div className="container mx-auto px-6 text-center">
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
-            Build Faster with <span className="text-primary">Modern Stack</span>
+            Track your <span className="text-primary">Gains</span> & <span className="text-orange-500">Habits</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            A powerful template featuring Vite, React, TailwindCSS, Shadcn UI, Convex, and React Router DOM.
+            The ultimate companion for your fitness journey. Log workouts, track calories, and build lasting habits with our all-in-one platform.
           </p>
           <div className="flex justify-center gap-4">
-            <Button size="lg" className="h-12 px-8 text-lg shadow-lg shadow-primary/20 transition-all hover:scale-105">
-              Start Building <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button size="lg" variant="outline" className="h-12 px-8 text-lg">
-              View Documentation
-            </Button>
+             {isSignedIn ? (
+                <Link to="/dashboard">
+                    <Button size="lg" className="h-12 px-8 text-lg shadow-lg shadow-primary/20 transition-all hover:scale-105">
+                    Go to Dashboard <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                </Link>
+             ) : (
+                <SignUpButton mode="modal">
+                    <Button size="lg" className="h-12 px-8 text-lg shadow-lg shadow-primary/20 transition-all hover:scale-105">
+                    Start Tracking Free <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                </SignUpButton>
+             )}
           </div>
         </div>
       </section>
@@ -48,37 +74,33 @@ export default function LandingPage() {
       {/* Features Grid */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-12">Everything you need to succeed</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <FeatureCard 
-              icon={<Palette className="h-8 w-8 text-blue-500" />}
-              title="Tailwind CSS"
-              description="Utility-first CSS framework for rapid UI development."
+              icon={<Dumbbell className="h-8 w-8 text-blue-500" />}
+              title="Workout Logger"
+              description="Log categories, exercises, sets, weights, and reps with ease."
             />
             <FeatureCard 
-              icon={<Layout className="h-8 w-8 text-purple-500" />}
-              title="Shadcn UI"
-              description="Beautifully designed components built with Radix UI."
+              icon={<Flame className="h-8 w-8 text-orange-500" />}
+              title="Streak Tracking"
+              description="Keep your streak alive! Weekends are safe, but consistency is key."
+            />
+             <FeatureCard 
+              icon={<ListTodo className="h-8 w-8 text-purple-500" />}
+              title="Habit Tracker"
+              description="Build better lifestyle habits alongside your training."
             />
             <FeatureCard 
-              icon={<Database className="h-8 w-8 text-orange-500" />}
-              title="Convex DB"
-              description="Reactive backend-as-a-service for realtime data."
-            />
-            <FeatureCard 
-              icon={<RouterIcon className="h-8 w-8 text-pink-500" />}
-              title="React Router"
-              description="Declarative routing for single-page applications."
+              icon={<Salad className="h-8 w-8 text-green-500" />}
+              title="Calorie Counter"
+              description="Track your nutrition to fuel your workouts properly."
             />
           </div>
         </div>
       </section>
       
-      {/* Footer */}
-      <footer className="py-10 border-t border-border">
-          <div className="text-center text-muted-foreground">
-              Built by Antigravity
-          </div>
-      </footer>
+
     </div>
   );
 }
